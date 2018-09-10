@@ -1,0 +1,44 @@
+---
+title: "hw1"
+author: "Chong Zhang"
+date: "September 4, 2018"
+output: html_document
+---
+
+
+###Question A
+####Please see all the missing values in the analysis of variance table below. The **Total Degree of Freedom** is **21** 
+```{r warning=FALSE, message=FALSE}
+library(reshape2)
+library(dplyr)
+
+Control = c(0.53, 0.36, 0.2, -0.37,-0.6, -0.64,-0.68,-1.27)
+Knees = c(0.73, 0.31, 0.03, -0.29, -0.56, -0.96, -1.61, NA)
+Eyes = c(-0.78, -0.86, -1.35, -1.48, -1.52, -2.04, -2.83, NA)
+raw_data = data.frame(cbind(Control,Knees, Eyes))%>%melt()
+colnames(raw_data) = c('Treatment', 'Phase Shift(h)')
+
+model = aov(raw_data$`Phase Shift(h)`~raw_data$Treatment)
+summary(model)
+```
+
+###Question B
+```{r warning=FALSE, message=FALSE}
+x = model.tables(model, type = 'mean')
+u1 = x$tables$`raw_data$Treatment`[1]
+u2 = x$tables$`raw_data$Treatment`[2]
+u3 = x$tables$`raw_data$Treatment`[3]
+```
+
+#### **u1** is the the mean of phase shift in **Control** group, which is **```r u1```**. **u2** is the the mean of phase shift in **Knees** group, which is **```r u2```**. **u3** is the mean of phase shift in **Eyes** group, which is **```r u3```**.
+
+
+###Question C
+####The **null hypothesis** is all three populations have the same mean: **u1 = u2 = u3**. The **alternative hypothesis** is that **the population means are not all equal**
+####(i) Under the H0, the F-test statistic has an **F statistic: 7.289**
+####(ii) The p-value of the ANOVA F-test is **0.00447**
+```{r warning=FALSE, message=FALSE}
+TukeyHSD(x = model, conf.level = 0.95)
+```
+
+####(iii) Based on the p-value from the F-test, we can reject the null hypothesis, which means that the population means of thress treatment are not the same. Based on the pair-wise comparison, I find that light treatment on eyes can affect the phase shift, whereas light treatment on knees failed to affect phase shift.
