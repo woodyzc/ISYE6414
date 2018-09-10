@@ -1,0 +1,123 @@
+---
+title: "Homework 1"
+author: "Chong Zhang"
+date: "August 31, 2018"
+output: html_document
+---
+# Read in file
+```{r read-in file, warning=FALSE, message=FALSE}
+library(dplyr)
+library(ggplot2)
+highway = read.table('Highway1.csv',sep = ',', header = T)%>%tbl_df()
+rate = highway$rate
+signs = highway$sigs1
+```
+
+##Question 1
+###a
+```{r scatter plot, warning=FALSE, message=FALSE}
+plot(y=rate, x=signs, main = 'scatter plot Rate vs Signs')
+```
+
+#####Generally speaking, more signs may lead to higher rate of accident. It seems there is a positive relationship between rate and signs.
+
+###b
+```{r corrlation coefficients, warning=FALSE, message=FALSE}
+cef = cor(x = rate, y = signs)
+```
+#####The correlation cefficient is **`r cef`**. The correlation cefficient mearsures the stength and direction of a linear relationship between two variables. It can vary between (-1, 1). A positive number in the correlation cefficient indicates a positive linear relationship. The more correlation cefficient close to 1, the stronger of the relationship. Thus a correlation cefficient of **`r cef`** suggests that there is a moderate positive linear realationship between the rate and signs.
+
+###c
+#####Based on this exploratory analysis, it is not reasonable to assume a simple linear regression model for the relationship between rate pf accidents and the number of signs. Because most of the samples are grouped at the corner of (x=0,y=0). result of them are scattered in different places. We should pay more attention to the points at the left top corner. They are leverage points. The exsitence of those points can highly infulence the model.
+```{r plot to high light the leverage point, warning=FALSE, message=FALSE}
+p = ggplot(data = highway, aes(x =sigs1, y= rate))
+p = p + geom_point(aes(col= rate>7.1&sigs1<1.5, size = rate>7.1&sigs1<1.5))
+p = p + geom_text(aes(label = ifelse(rate>7.1&sigs1<1.5, 'LP', '')),hjust=1, vjust=2)
+p = p + theme(legend.position = "none")
+p = p + xlab('signs')+ylab('rate')
+p = p + geom_smooth(method = 'lm', level = 0.95)
+p
+```
+
+###d
+#####yes, I would pursue a transfomation of the data. After natural log transformed the data, I plot them again. This time, the original leverage point grouped better with other data points. However the corrlation coefficients does not get much improvment.
+```{r transformation, warning=FALSE, message=FALSE}
+p = ggplot(data = highway, aes(x =log(sigs1), y= log(rate)))
+p = p + geom_point(aes(col= rate>7.1&sigs1<1.5, size = rate>7.1&sigs1<1.5))
+p = p + geom_text(aes(label = ifelse(rate>7.1&sigs1<1.5, 'original LP', '')),hjust=1, vjust=2)
+p = p + annotate("text", x = -1, y = 1, label = paste('corrlation coefficients:', round((cor(x = log(rate), y = log(signs))),3)))
+p = p + theme(legend.position = "none",plot.title = element_text(family = "Helvetica", face = "bold", size = (15), hjust=0.3))
+p = p + xlab('signs')+ylab('rate')+labs(title='transformed data')
+p = p + geom_smooth(method = 'lm', level = 0.95)
+p
+```
+
+##Question 2
+###a
+```{r fit lm model, warning=FALSE, message=FALSE}
+model = lm(rate ~ signs)
+summary(model)
+```
+#####There are couple of parameters for this model. They are:
+#####1: Intercept **`r round(model$coefficients[1],3)`**. It estimates the expected response of accident rate when there is no sign on the road.
+#####2: Slope **`r round(model$coefficients[2],3)`** It estimates the expected increment in the response of accident rate per unit change in signs.
+#####3: Residual standard error **`r round(sqrt(deviance(model)/model$df.residual),3)`** It estimates the standard error of the deviance, AKA the error term.
+
+###b
+#####The equation for the least square line is: Y =`r round(model$coefficients[1],3)`+ `r round(model$coefficients[2],3)`*X
+
+
+###c
+#####The slope parameter is **`r round(model$coefficients[2],3)`**. The standard error is **0.3918**. It means that for every one unit increase of signals per mile of roadway, there will be **`r round(model$coefficients[2],3)` $\pm$ 0.3918** increase in accident rate.
+
+###d
+```{r, warning=FALSE, message=FALSE}
+confidence_95 = confint(model, level = 0.95)%>%as.data.frame()
+confidence_95[2,]
+```
+#####The 95% confidence interval for the slope parameter is shown above. It is statistically significant at this level given the **p-value** is 4.82e-05. 
+
+##Question 3
+###a
+####Scatterplot of the data
+```{r Scatterplot of the data, warning=FALSE, message=FALSE}
+p = ggplot(data = highway, aes(x =sigs1, y= rate))
+p = p + geom_point()
+p = p + theme(legend.position = "none",plot.title = element_text(family = "Helvetica", face = "bold", size = (15), hjust=0.3))
+p = p + xlab('signs')+ylab('rate')+labs(title='accident rate vs signs')
+p = p + geom_smooth(method = 'lm', level = 0.95)
+p
+```
+
+#####This scatterplot of data is used to asses whether the linear relationship is true for this set of two variables. From this scatterplot, it seems there is some level linear relationship. However majority of the data cluster at the lower left corner of the scatterplot. Also there are couple of outliers, espcially the one at the upper left corner. This can be imporved by performing a log transformation of the data set.
+
+###b
+####Residual plot
+```{r Residual plot, warning=FALSE, message=FALSE}
+p = ggplot(data = highway, aes(x=fitted(model), y=model$residuals))
+p = p + geom_point()
+p = p + theme(legend.position = "none",plot.title = element_text(family = "Helvetica", face = "bold", size = (15), hjust=0.3))
+p = p + ylab('Residuals')+xlab('Fitted Value')+labs(title='Residual plot')
+p = p + geom_abline(slope = 0, intercept = 0, col = 'red')
+p
+```
+
+####This residual plot of **Fitted Value** and **Residuals** is used to assess whether there is constant error variance (homoscedasticity). Any non random pattern indicating a change in variance at levels of y, which means the variance is not constant. From the plot, it seems there is no non-random pattern. Thus the assumption of constant error variance hold.
+
+
+###c
+####Normal probability plot of the residuals
+```{r Normal probability plot of the residuals, warning=FALSE, message=FALSE}
+qqnorm(model$residuals)
+qqline(model$residuals)
+```
+
+####This Q-Q plot is used to assess the normality of the error. It plots **Residuals** and **the quantiles of the standard normal distribution**. Any pattern other than a 45 degree indicates a violation of the assumption. From the plot, it seems overall, the distribution of the residuals follows a normal distribution. However there are some outliers in the plot. Most of them are at the upper right corner.
+
+##Question 4
+```{r prediction, warning=FALSE, message=FALSE}
+new_data = data.frame(signs = 2)
+print (paste('The predictted accident rate is',round(predict(model, newdata = new_data),3)))
+print (paste('The 95% confidence intervel for the predictted value is:'))
+predict(model,new_data,interval = 'predict')
+```
