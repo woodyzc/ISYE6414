@@ -9,8 +9,8 @@ output: html_document
 library(dplyr)
 library(ggplot2)
 highway = read.table('Highway1.csv',sep = ',', header = T)%>%tbl_df()
-rate = highway$rate
-signs = highway$sigs1
+rate = log(highway$rate)
+signs = log(highway$sigs1)
 ```
 
 ##Question 1
