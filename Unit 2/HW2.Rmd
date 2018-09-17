@@ -28,11 +28,19 @@ female =  mutate(teengamb, sex = 1)
 male_exp = mean(predict(object = model, newdata = male))
 female_exp = mean(predict(object = model, newdata = female))
 
+difference = male_exp - female_exp
 ```
-####the differnce in predicted expenditure on gambling for a male compared to a female is **```r male_exp-female_exp```**, if hold all other predictors constant.
+####The differnce in predicted expenditure on gambling for a male compared to a female is **```r difference```**, if hold all other predictors constant. Alternatively, we can also obtain this information from the coefficient of **Sex**, which is also **-22.11833**.
 
 ###(c) Write down the least squares regression equation using all the variables in the model.
-#### Expenditure = 22.55 - 22.12\*Sex + 0.05\*Status + 4.96\*Income -2.96\*Verba
+#### $Expenditure = 22.55 - 22.12{*}Sex + 0.05{*}Status + 4.96{*}Income -2.96{*}Verba$
 
 ###(d) Which variables are statistically significant (at the 5% level of significance)? Interpret.
 #### Both **Sex** and **Income** are statistically significant (at the 5% level of significance). For Sex, it means that if hold all other predictors constant, female (marked as 1) spend 22.11 pounds less than male (marked as 0) on gambling. For income, it means that if hold all other predictors constant, one pound/week increase in income will lead to 4.96 pounds more spent on gambling.
+
+###(e) Find a 90% confidence interval for $\hat\beta_0$. Interpret how this interval can help in determining the significance of this coefficient in the model.
+```{r }
+confidence = confint(model, level = 0.90)
+confidence[1,]
+```
+#### The 90% confidence interval for $\hat\beta_0$ is (```r confidence[1,]```). Since this interval includes **0**, it means that alternative hypothesis that **$\hat\beta_0$ is not equal to 0** is rejected. Thus $\hat\beta_0$ is not significant in the model. 
