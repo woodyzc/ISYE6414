@@ -1,0 +1,72 @@
+---
+title: "HW3"
+author: "Chong Zhang"
+date: "September 26, 2018"
+output: html_document
+---
+
+###Load data
+```{r warning=FALSE, message=FALSE}
+library(ggplot2)
+data_table = read.table('Birthweight.csv', header = T, sep = ',')
+head(data_table)
+```
+
+#### Using a scatterplot describe the relationship between BirthWt and the numeric independent variables; Age, MotherWt, NumPreLabor, NumPhysicianVt. Describe the general trend (direction and form). What are the values of the correlation coefficients? Please interpret.
+
+```{r }
+p = ggplot(data = data_table, aes(x=BirthWt, y = Age))+geom_point()+geom_smooth(method = 'lm')+xlab('Birth Weight')+ylab('Age of mother')+theme(axis.title = element_text(size=18))
+p
+
+Cor_co = cor(data_table$BirthWt, data_table$Age)
+```
+#####It seems that there is **no** linear relationship between the birth weight and the age of the monther. The distibution of birth weight is similar across all ages.  The correlation coefficient of this pair of data is **```r Cor_co```**. It means that there is no linear relationship.
+
+```{r }
+p = ggplot(data = data_table, aes(x=BirthWt, y = MotherWt))+geom_point()+geom_smooth(method = 'lm')+xlab('Birth Weight')+ylab('Weight of mother')+theme(axis.title = element_text(size=18))
+p
+
+
+Cor_co = cor(data_table$BirthWt, data_table$MotherWt)
+```
+#####It seems that there is a **very very mild** linear relationship between the birth weight and the weight of the monther. It seems that the heavier the mother, the heavier of the baby. The correlation coefficient of this pair of data is **```r Cor_co```**. It indicates a very very mild linear relationship.
+
+```{r }
+p = ggplot(data = data_table, aes(x=BirthWt, y = NumPreLabor))+geom_count()+geom_smooth(method = 'lm')+xlab('Birth Weight')+ylab('Number of pre-labor')+theme(axis.title = element_text(size=18))
+p
+
+
+Cor_co = cor(data_table$BirthWt, data_table$NumPreLabor)
+```
+#####It seems that there is **no** linear relationship between the birth weight and the weight of the monther. The correlation coefficient of this pair of data is **```r Cor_co```**. It suggests that there is no linear relationship.
+
+```{r }
+p = ggplot(data = data_table, aes(x=BirthWt, y = NumPhysicianVt))+geom_count()+geom_smooth(method = 'lm')+xlab('Birth Weight')+ylab('Number of Physician Visit')+theme(axis.title = element_text(size=18))
+p
+
+
+Cor_co = cor(data_table$BirthWt, data_table$NumPhysicianVt)
+```
+#####It seems that there is **no** linear relationship between the birth weight and the weight of the monther. The correlation coefficient of this pair of data is **```r Cor_co```**. It suggest that there is no linear relationship.
+
+
+####Describe the relationship between BirthWt and the categorical independent variables Race, Smoke, Hypertension, UterineIrr. Does BirthWt vary with the categorical variables? Use boxplot function in R as follows:
+```{r }
+par(mfrow=c(2,2))
+boxplot(data_table$BirthWt~as.factor(data_table$Race),xlab="Race", ylab='BirthWeight')
+boxplot(data_table$BirthWt~as.factor(data_table$Smoke), xlab="Smoke", ylab="BirthWt")
+boxplot(data_table$BirthWt~as.factor(data_table$Hypertension), xlab="Hypertension", ylab="BirthWt")
+boxplot(data_table$BirthWt~as.factor(data_table$UterineIrr), xlab="Uterine Irritability", ylab="BirthWt")
+
+
+x=lm(data_table$BirthWt~., data = data_table)
+summary(x)
+```
+##### For the variable **Race**, it seems that mothers with the race of **White** gave birth to babies with higher brith weight. For the variable **Smoke**, it seems that the mothers who **smoke** gave birth to babies with lower brith weight. For the variable **Hypertension**, it seems that the mothers with **Hypertension** gave birth to babies with lower brith weight. For the variable **Uterine Irritability**, it seems that the mothers with **Uterine Irritability** gave birth to babies with lower brith weight. 
+
+
+#### Based on this exploratory analysis, is it reasonable to assume a linear regression model? Would you suggest that BirthWt varies with all or only some of the independent variables? Would you recommend using the qualitative variables Race, Smoke, Hypertension, UterineIrr in the model? Why?
+
+#####
+
+
