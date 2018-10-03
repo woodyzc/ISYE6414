@@ -78,4 +78,11 @@ $BirthWt = 2439.53-3.57*Age+4.35*MotherWt+133.35*RaceOther+488.43RaceWhite-352.0
 ##### For the parameter corresponding to **Age**, it means that with one year increase in the age of the mother, there will be **3.57 gram decrease** in the Birth weight of the baby when holding all other variables constant.
 ##### For the parameter corresponding to **MotherWt**, it means that with one pound increase in the weight of mother, there will be **4.35 gram increase** in the Birth weight of the baby when holding all other variables constant.
 ##### For the parameter of Race, the regression model used **Black** as its baseline, so for **RaceOther**, it means that when the monther's race is **Other**, there will be a **133.35 gram increase** in the Birth weight of the baby compared to the Birth weight of a baby whose mother is **Black** when holding all other variables contant.
-#####Similarly, for **RaceWhite**, it means that when the monther's race is **White**, there will be a **488.43 gram increase** in the Birth weight of the baby compared to the Birth weight of a baby whose mother is **Black** when holding all other variables contant.
+##### Similarly, for **RaceWhite**, it means that when the monther's race is **White**, there will be a **488.43 gram increase** in the Birth weight of the baby compared to the Birth weight of a baby whose mother is **Black** when holding all other variables contant.
+
+#### (iv) Find a 95% confidence interval for the parameters corresponding to all predictors and the intercept.
+```{r warning=FALSE}
+confint(object = model,level = 0.95)
+````
+
+##### The 95% confidence intervals for all the predictors and intercept are shown above.

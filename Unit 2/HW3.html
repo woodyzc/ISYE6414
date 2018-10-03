@@ -277,6 +277,24 @@ summary(model)</code></pre>
 <h5>Similarly, for <strong>RaceWhite</strong>, it means that when the monther’s race is <strong>White</strong>, there will be a <strong>488.43 gram increase</strong> in the Birth weight of the baby compared to the Birth weight of a baby whose mother is <strong>Black</strong> when holding all other variables contant.</h5>
 </div>
 </div>
+<div id="iv-find-a-95-confidence-interval-for-the-parameters-corresponding-to-all-predictors-and-the-intercept." class="section level4">
+<h4>(iv) Find a 95% confidence interval for the parameters corresponding to all predictors and the intercept.</h4>
+<pre class="r"><code>confint(object = model,level = 0.95)</code></pre>
+<pre><code>##                        2.5 %      97.5 %
+## (Intercept)     1793.8016986 3085.267098
+## Age              -22.5535895   15.413721
+## MotherWt           0.9291722    7.778853
+## RaceOther       -181.1807101  447.881573
+## RaceWhite        192.4622407  784.392836
+## SmokeYes        -562.1550309 -141.934036
+## NumPreLabor     -249.6231426  152.819074
+## HypertensionYes -992.0688887 -193.586000
+## UterineIrrYes   -790.1441980 -242.017757
+## NumPhysicianVt  -105.7536827   77.637574</code></pre>
+<div id="the-95-confidence-intervals-for-all-the-predictors-and-intercept-are-shown-above." class="section level5">
+<h5>The 95% confidence intervals for all the predictors and intercept are shown above.</h5>
+</div>
+</div>
 </div>
 
 
