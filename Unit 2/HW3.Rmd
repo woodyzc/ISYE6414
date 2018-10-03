@@ -80,7 +80,6 @@ $BirthWt = 2439.53-3.57*Age+4.35*MotherWt+133.35*RaceOther+488.43RaceWhite-352.0
 ##### For the parameter of Race, the regression model used **Black** as its baseline, so for **RaceOther**, it means that when the monther's race is **Other**, there will be a **133.35 gram increase** in the Birth weight of the baby compared to the Birth weight of a baby whose mother is **Black** when holding all other variables contant.
 ##### Similarly, for **RaceWhite**, it means that when the monther's race is **White**, there will be a **488.43 gram increase** in the Birth weight of the baby compared to the Birth weight of a baby whose mother is **Black** when holding all other variables contant.
 
-<<<<<<< HEAD
 ####(iv) Find a 95% confidence interval for the parameters corresponding to all predictors and the intercept.
 ```{r warning=FALSE, cache=TRUE}
 confint(object = model,level = 0.95)
@@ -98,7 +97,7 @@ p = p + geom_text(aes(label = ifelse(cooksd>4*mean(cooksd), index,'')),hjust=-0.
 p
 ```
 
-In general, those observations that have a cook’s distance greater than 4 times the mean may be classified as influential. Thus data points **1,2,3,4,153,161,165,173,189** are considered as influential points. They could be outliers.
+In general, those observations that have a cook's distance greater than 4 times the mean may be classified as influential. Thus data points **1,2,3,4,153,161,165,173,189** are considered as influential points. They could be outliers.
 
 Let's take a look at those data points.
 ```{r warning=FALSE, cache=TRUE}
@@ -121,14 +120,40 @@ p4 = ggplot(data = new_data, aes(x=BirthWt, y = NumPhysicianVt))+geom_smooth(dat
 grid.arrange(p1,p2,p3,p4)
 ```
 
-As we can see, nearly all the potential outliers are on the edge of the distribution of the data points. I also plot the regression lines for all the none-outliers (red) and original data(blue dash line). It seems that after removing all the potential outliers, the regression line is still almost the same. Besides, all the variables included in the study are realtively easy to get and not likely to be wrong, thus all the data tend to be trustful. Even if there are some seemly extrem data points, it could still be the nature of the system. In conclusion, it is not necessary to remove all the potential outliers.
+##### As we can see, nearly all the potential outliers are on the edge of the distribution of the data points. I also plot the regression lines for all the none-outliers (red) and original data(blue dash line). It seems that after removing all the potential outliers, the regression line is still almost the same. Besides, all the variables included in the study are realtively easy to get and not likely to be wrong, thus all the data tend to be trustful. Even if there are some seemly extrem data points, it could still be the nature of the system. In conclusion, it is not necessary to remove all the potential outliers.
 
-#### Question 4: Testing the significance of the linear relationship observed in the data. Using the model created in question 2, test whether there is a significant linear relationship, use alpha=0.05, between BirthWt and MotherWt; indicate the parameter corresponding to MotherWt  with  . From the output, answer the following for the test $\hat\beta\_MotherWt$ H0:  = 0
-=======
-#### (iv) Find a 95% confidence interval for the parameters corresponding to all predictors and the intercept.
-```{r warning=FALSE}
-confint(object = model,level = 0.95)
-````
+#### Question 4: Testing the significance of the linear relationship observed in the data. Using the model created in question 2, test whether there is a significant linear relationship, use alpha=0.05, between BirthWt and MotherWt; indicate the parameter corresponding to MotherWt with $\beta\_MotherWt$. From the output, answer the following for the test $\beta\_MotherWt$ H0:  = 0
 
-##### The 95% confidence intervals for all the predictors and intercept are shown above.
->>>>>>> 302ac4ab7b90d3be89eb5fb36715e9c5e966939c
+```{r warning=FALSE, cache=TRUE}
+summary(model)
+```
+
+#### (i) What is the P-value of the test?
+#####Based on the P value for MontherWt which is **0.013007**.
+
+#### ((ii) What does the actual value of the P-value tell you?
+##### It is smaller than alpha = 0.5. Which means the null hypothesis $\beta\_MotherWt$ H0:  = 0 is rejected. The alternative hypothesis is Ha: $\neq$ 0.
+
+#### (iii) State your conclusion in the context of the problem. 
+ Thus there is a significant linear relationship between BirthWt and MotherWt.
+ 
+#### Question 5: Checking the Assumptions of the Model. Plot the relevant residual plots to check the model assumptions. Enumerate the assumptions and describe what graphical techniques you used. Interpret the displays with respect to the assumptions of the linear regression model. In other words, comment on whether there are any apparent departures from the assumptions of the linear regression model.
+
+```{r warning=FALSE, cache=TRUE}
+p1=ggplot(data= model, aes(x=model$fitted.values, y=model$residuals))+geom_point(shape=1, size=3)+xlab('Fitted BirthWt')+ylab('Residuals')+theme(axis.title=element_text(size=12))+geom_hline(yintercept = 1)+ggtitle('Constant Variance Assumption')
+
+p2 =ggplot(data= data_table,aes(x=data_table$Age,y=model$residuals))+geom_point(shape=1,size=3)+xlab('Age')+ylab('Residuals')+theme(axis.title = element_text(size=12))+geom_hline(yintercept=1)+ggtitle('Linearity Assumption')
+
+p3 =ggplot(data= data_table,aes(x=data_table$MotherWt,y=model$residuals))+geom_point(shape=1,size=3)+xlab('MotherWt')+ylab('Residuals')+theme(axis.title=element_text(size=12))+geom_hline(yintercept=1)+ggtitle('Linearity Assumption')
+
+p4 =ggplot(data= data_table,aes(x=data_table$NumPreLabor,y=model$residuals))+geom_point(shape=1,size=3)+xlab('NumPreLabor')+ylab('Residuals')+theme(axis.title = element_text(size=12))+geom_hline(yintercept = 1)+ggtitle('Linearity Assumption')
+
+p5 =ggplot(data= data_table,aes(x=data_table$NumPhysicianVt,y=model$residuals))+geom_point(shape=1,size=3)+xlab('NumPhysicianVt')+ylab('Residuals')+theme(axis.title =element_text(size=12))+geom_hline(yintercept = 1)+ggtitle('Linearity Assumption')
+
+p6 = ggplot(data= data_table,aes(model$residuals))+geom_histogram()+xlab('Residuals')+ylab('Count')+theme(axis.title =element_text(size=12))+ggtitle('Normality Assumption')
+
+grid.arrange(p1,p2,p3,p4,p5,p6)
+
+qqnorm(model$residuals)
+qqline(model$residuals)
+```
