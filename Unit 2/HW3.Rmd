@@ -80,6 +80,7 @@ $BirthWt = 2439.53-3.57*Age+4.35*MotherWt+133.35*RaceOther+488.43RaceWhite-352.0
 ##### For the parameter of Race, the regression model used **Black** as its baseline, so for **RaceOther**, it means that when the monther's race is **Other**, there will be a **133.35 gram increase** in the Birth weight of the baby compared to the Birth weight of a baby whose mother is **Black** when holding all other variables contant.
 ##### Similarly, for **RaceWhite**, it means that when the monther's race is **White**, there will be a **488.43 gram increase** in the Birth weight of the baby compared to the Birth weight of a baby whose mother is **Black** when holding all other variables contant.
 
+<<<<<<< HEAD
 ####(iv) Find a 95% confidence interval for the parameters corresponding to all predictors and the intercept.
 ```{r warning=FALSE, cache=TRUE}
 confint(object = model,level = 0.95)
@@ -123,3 +124,11 @@ grid.arrange(p1,p2,p3,p4)
 As we can see, nearly all the potential outliers are on the edge of the distribution of the data points. I also plot the regression lines for all the none-outliers (red) and original data(blue dash line). It seems that after removing all the potential outliers, the regression line is still almost the same. Besides, all the variables included in the study are realtively easy to get and not likely to be wrong, thus all the data tend to be trustful. Even if there are some seemly extrem data points, it could still be the nature of the system. In conclusion, it is not necessary to remove all the potential outliers.
 
 #### Question 4: Testing the significance of the linear relationship observed in the data. Using the model created in question 2, test whether there is a significant linear relationship, use alpha=0.05, between BirthWt and MotherWt; indicate the parameter corresponding to MotherWt  with  . From the output, answer the following for the test $\hat\beta\_MotherWt$ H0:  = 0
+=======
+#### (iv) Find a 95% confidence interval for the parameters corresponding to all predictors and the intercept.
+```{r warning=FALSE}
+confint(object = model,level = 0.95)
+````
+
+##### The 95% confidence intervals for all the predictors and intercept are shown above.
+>>>>>>> 302ac4ab7b90d3be89eb5fb36715e9c5e966939c
