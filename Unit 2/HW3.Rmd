@@ -140,15 +140,15 @@ summary(model)
 #### Question 5: Checking the Assumptions of the Model. Plot the relevant residual plots to check the model assumptions. Enumerate the assumptions and describe what graphical techniques you used. Interpret the displays with respect to the assumptions of the linear regression model. In other words, comment on whether there are any apparent departures from the assumptions of the linear regression model.
 
 ```{r warning=FALSE, cache=TRUE}
-p1=ggplot(data= model, aes(x=model$fitted.values, y=model$residuals))+geom_point(shape=1, size=3)+xlab('Fitted BirthWt')+ylab('Residuals')+theme(axis.title=element_text(size=12))+geom_hline(yintercept = 1)+ggtitle('Constant Variance Assumption')
+p1=ggplot(data= model, aes(x=model$fitted.values, y=model$residuals))+geom_point(shape=1, size=2)+xlab('Fitted BirthWt')+ylab('Residuals')+theme(axis.title=element_text(size=12))+geom_hline(yintercept = 0)+ggtitle('Constant Variance/\nIndependence Assumption')
 
-p2 =ggplot(data= data_table,aes(x=data_table$Age,y=model$residuals))+geom_point(shape=1,size=3)+xlab('Age')+ylab('Residuals')+theme(axis.title = element_text(size=12))+geom_hline(yintercept=1)+ggtitle('Linearity Assumption')
+p2 =ggplot(data= data_table,aes(x=data_table$Age,y=model$residuals))+geom_point(shape=1,size=2)+xlab('Age')+ylab('Residuals')+theme(axis.title = element_text(size=12))+geom_hline(yintercept=0)+ggtitle('Linearity Assumption')
 
-p3 =ggplot(data= data_table,aes(x=data_table$MotherWt,y=model$residuals))+geom_point(shape=1,size=3)+xlab('MotherWt')+ylab('Residuals')+theme(axis.title=element_text(size=12))+geom_hline(yintercept=1)+ggtitle('Linearity Assumption')
+p3 =ggplot(data= data_table,aes(x=data_table$MotherWt,y=model$residuals))+geom_point(shape=1,size=2)+xlab('MotherWt')+ylab('Residuals')+theme(axis.title=element_text(size=12))+geom_hline(yintercept=0)+ggtitle('Linearity Assumption')
 
-p4 =ggplot(data= data_table,aes(x=data_table$NumPreLabor,y=model$residuals))+geom_point(shape=1,size=3)+xlab('NumPreLabor')+ylab('Residuals')+theme(axis.title = element_text(size=12))+geom_hline(yintercept = 1)+ggtitle('Linearity Assumption')
+p4 =ggplot(data= data_table,aes(x=data_table$NumPreLabor,y=model$residuals))+geom_point(shape=1,size=2)+xlab('NumPreLabor')+ylab('Residuals')+theme(axis.title = element_text(size=12))+geom_hline(yintercept = 0)+ggtitle('Linearity Assumption')
 
-p5 =ggplot(data= data_table,aes(x=data_table$NumPhysicianVt,y=model$residuals))+geom_point(shape=1,size=3)+xlab('NumPhysicianVt')+ylab('Residuals')+theme(axis.title =element_text(size=12))+geom_hline(yintercept = 1)+ggtitle('Linearity Assumption')
+p5 =ggplot(data= data_table,aes(x=data_table$NumPhysicianVt,y=model$residuals))+geom_point(shape=1,size=2)+xlab('NumPhysicianVt')+ylab('Residuals')+theme(axis.title =element_text(size=12))+geom_hline(yintercept = 0)+ggtitle('Linearity Assumption')
 
 p6 = ggplot(data= data_table,aes(model$residuals))+geom_histogram()+xlab('Residuals')+ylab('Count')+theme(axis.title =element_text(size=12))+ggtitle('Normality Assumption')
 
@@ -157,3 +157,11 @@ grid.arrange(p1,p2,p3,p4,p5,p6)
 qqnorm(model$residuals)
 qqline(model$residuals)
 ```
+
+#####**Constant Variance Assumption**:  I plot the residuals against the fitted values. All the residuals are distributed around 0. It also seems that the variance is constant across all the fitted values. Thus the **Constant Variance Assumption holds**. 
+
+#####**Independence Assumption** It seems that there are 3 clusters of residuals which means that the error terms are correlated. Thus **Independence Assumption does not hold**.
+
+#####**Linearity Assumption** I plot the residuals against each predictiing variable. All the plots show residuals distribut equally around the y=0 line. Thus it indicates that **Linearity Assumption holds**.
+
+#####**Normality assumption** I use the QQ plot to study the normality assumption. Plot the residuals against the theoretical quantiles.  The residuals approximately follow a straight line. Thus it suggests that the **Normality assumption holds**.

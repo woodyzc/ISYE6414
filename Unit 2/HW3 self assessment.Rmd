@@ -1,0 +1,24 @@
+---
+title: "HW3 self assessment"
+author: "Chong Zhang"
+date: "October 3, 2018"
+output: html_document
+---
+
+**(a) Test for the significance of each variable as it enters the model. For each of the three responses state the test:  the null hypothesis in terms of the regression coefficient parameters, the value of the test statistic and the p-value of the statistic.**
+
+$n=22$
+
+$SS_{X_{1}} = 981.326$
+
+$SS_{X_{2}|X_{1}} = 190.232$
+
+$SS_{X_{3}|X_{2},X_{1}} = 190.232$
+
+$SS_{full} =SS_{X_{1}}+SS_{X_{2}|X_{1}}+SS_{X_{3}|X_{2},X_{1}}=981.326+190.232+129.431=1300.989$
+
+$MSE_{full}=\dfrac{SS_{full}}{n}=59.136$
+
+$F_{partial}=\dfrac{SS_{full}-SS_{reduced}}{MSE_{full}}$
+
+1. when $X_{1}$ enters the model. $F_{X_{1}}=\dfrac{SS_{X_{1}}}{MSE_{X_{1}}}=22$
