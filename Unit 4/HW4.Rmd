@@ -1,0 +1,87 @@
+---
+title: "HW4"
+author: "Chong Zhang"
+date: "November 8, 2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+setwd("~/Desktop/ISYE6414/Unit 4")
+
+library(ggplot2)
+library(dplyr)
+library(gridExtra)
+
+affair = read.table('affair.csv',header = T, stringsAsFactors = F, sep = ',')%>%tbl_df()
+
+```
+
+####Question 1: Exploratory Data Analysis
+
+1. Using a scatterplot describe the relationship between the log of number of extramarital affairs log(nbaffairs+1) and the numeric independent variables. Add 1 to number of affairs before log transformation to avoid zero value during transformation. Describe the general trend (direction and form). What are the values of the correlation coefficients? Please interpret.
+
+
+```{r warning=FALSE, message=FALSE, cache=TRUE}
+p1 = ggplot(affair, aes(x=affair$age,y=log(affair$nbaffairs+1)))+geom_count()+xlab('Age')+ylab('number of affairs')+scale_y_continuous(limits = c(-0.5, 3))
+p2 = ggplot(affair, aes(x= affair$ym,y=log(affair$nbaffairs+1)))+geom_count()+xlab('Number of years married')+ylab('number of affairs')+scale_y_continuous(limits = c(-0.5, 3))
+p3 = ggplot(affair, aes(x=affair$religious,y=log(affair$nbaffairs+1)))+geom_count()+xlab('how religious is the subject ')+ylab('number of affairs')+scale_y_continuous(limits = c(-0.5, 3))
+p4 = ggplot(affair, aes(x= affair$education,y=log(affair$nbaffairs+1)))+geom_count()+xlab('Number of years the subject has received full time education')+ylab('number of affairs')+scale_y_continuous(limits = c(-0.5, 3))
+p5 = ggplot(affair, aes(x= affair$occupation,y=log(affair$nbaffairs+1)))+geom_count()+xlab('how prestigious is the subject’s occupation')+ylab('number of affairs')+scale_y_continuous(limits = c(-0.5, 3))
+p6 = ggplot(affair, aes(x= affair$rate,y=log(affair$nbaffairs+1)))+geom_count()+xlab('how satisfied does the subject rates his/her marriage')+ylab('number of affairs')+scale_y_continuous(limits = c(-0.5, 3))
+grid.arrange(p1,p2,p3,p4,p5,p6)
+cor1 = cor(x= affair$age,y=log(affair$nbaffairs+1))
+cor2 = cor(x= affair$ym,y=log(affair$nbaffairs+1))
+cor3 = cor(x= affair$religious,y=log(affair$nbaffairs+1))
+cor4 = cor(x= affair$education,y=log(affair$nbaffairs+1))
+cor5 = cor(x= affair$occupation,y=log(affair$nbaffairs+1))
+cor6 = cor(x= affair$rate,y=log(affair$nbaffairs+1))
+```
+
+There are 6 numeric independent variables. They are **Age,Number of years married, Education, Religous, occupation and rate**.
+
+Based on scatterplots, It seems that there is no apprent relatonship between number of affairs and those three numeric independent variables.
+
+The correlation coefficinets between log(naffairs+1) and Age,Number of years married, Education are **```r c(cor1, cor2, cor3, cor4, cor5, cor6)```**. The correlation coefficient between number of affairs and number of years married and how religous is the subject are slightly larger than 0.15, which indicates a **very very mild** relationship. The correlation coefficient between number of affairs and how satisfied does the subject rates his/her marriage is larger than 0.25, which indicates a **mild** relationship. The rest are very close to 0, which means no correlation.
+
+2. Describe the relationship between the log transform of the number of extramarital affairs and the categorical independent variables sex and child. Do the log transform vary with the categorical variables?
+```{r warning=FALSE, message=F,cache=TRUE}
+p1 = ggplot(affair, aes(x=affair$sex,y=log(affair$nbaffairs+1)))+geom_boxplot()+xlab('Sex')+ylab('number of affairs')
+p2 = ggplot(affair, aes(x=affair$child,y=log(affair$nbaffairs+1)))+geom_boxplot()+xlab('Child')+ylab('number of affairs')
+grid.arrange(p1,p2)
+
+```
+
+It seems that the log transformed number of affairs varies a lot with the categorical variables. Majority of subjects who are female or have no child have no affairs. Whereas subjects who are male or have children tend to have more affairs.
+
+3. Based on this exploratory analysis, is it reasonable to assume a linear relationship between the log transform of number of extramarital affairs and the predictors?
+
+Based on this exploratory analysis, **it is not reasonable to assume a linear relationship.**
+
+####Question 2: Fitting the Regression Model.
+Fit a Poisson regression to evaluate the relationship between the number of extramarital affairs and all the predictors.
+(i) What are the model parameters and what are their estimates?
+
+```{r warning=F, message=F,cache=TRUE}
+method = glm(data = affair,nbaffairs~., family = 'poisson')
+summary(method)
+```
+
+Model parameters include: **sexmale, age, ym, childyes, religous, education, occupation, rate and intercept**. The estimates of each parameters are shown above.
+
+(ii) Write down the equation for the estimated log transformation of number of affairs given the predicting variables
+
+$Log(naffairs) = 2.55+0.058*sexmale-0.033*age+0.117*ym-0.003*childyes-0.355*religous$
+$+0.0006*education+0.072*occupation-0.411*rate$
+
+(iii) Interpret the estimated value of the parameters corresponding with sex and age in the context of the problem.
+
+For **sex**, it means that the expected number of affairs per year for male vs female is exp(0.058)=```r exp(0.058)```, holding all other variables constant.
+
+For **age**, it means that the expected number of affairs per year for one unit increase in age is exp(0.033)=```r exp(-0.033)```, holding all other variables constant.
+
+####Question 3: Testing the significance of the linear relationship observed in the data.
+(i) Find a 99% confidence interval for the parameters corresponding to all predictors plus the intercept.
+
+```{r warning=F, message=F,cache=TRUE}
+confint(object = method, level = 0.99)
+```
