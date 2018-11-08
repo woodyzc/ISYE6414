@@ -85,3 +85,12 @@ For **age**, it means that the expected number of affairs per year for one unit 
 ```{r warning=F, message=F,cache=TRUE}
 confint(object = method, level = 0.99)
 ```
+
+99% confidence interval for the parameters corresponding to all predictors plus the intercept are shown above.
+
+(ii) Which variables are significant at the significance level $\alpha$ = 0.01? Give the p-value for any variable that is not significant.
+
+**Intercept, age, ym, religous, occupation, rate** are significant at the level  $\alpha$ = 0.01.
+For variables that are not significant, **Sexmale: p = 0.4791, childyes: p = 0.9793, education: p = 0.9715**.
+
+####Question 4: Goodness of Fit.
