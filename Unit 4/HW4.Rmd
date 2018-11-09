@@ -6,7 +6,7 @@ output: html_document
 ---
 
 ```{r setup, include=FALSE}
-setwd("~/Desktop/ISYE6414/Unit 4")
+#setwd("~/Desktop/ISYE6414/Unit 4")
 
 library(ggplot2)
 library(dplyr)
@@ -16,7 +16,7 @@ affair = read.table('affair.csv',header = T, stringsAsFactors = F, sep = ',')%>%
 
 ```
 
-####Question 1: Exploratory Data Analysis
+###Question 1: Exploratory Data Analysis
 
 1. Using a scatterplot describe the relationship between the log of number of extramarital affairs log(nbaffairs+1) and the numeric independent variables. Add 1 to number of affairs before log transformation to avoid zero value during transformation. Describe the general trend (direction and form). What are the values of the correlation coefficients? Please interpret.
 
@@ -57,7 +57,7 @@ It seems that the log transformed number of affairs varies a lot with the catego
 
 Based on this exploratory analysis, **it is not reasonable to assume a linear relationship.**
 
-####Question 2: Fitting the Regression Model.
+###Question 2: Fitting the Regression Model.
 Fit a Poisson regression to evaluate the relationship between the number of extramarital affairs and all the predictors.
 (i) What are the model parameters and what are their estimates?
 
@@ -75,11 +75,11 @@ $+0.0006*education+0.072*occupation-0.411*rate$
 
 (iii) Interpret the estimated value of the parameters corresponding with sex and age in the context of the problem.
 
-For **sex**, it means that the expected number of affairs per year for male vs female is exp(0.058)=```r exp(0.058)```, holding all other variables constant.
+For **sex**, it means that the expected number of affairs per year for male vs female is exp(0.058)=```r exp(0.058)```, holding all other variables  constant.
 
 For **age**, it means that the expected number of affairs per year for one unit increase in age is exp(0.033)=```r exp(-0.033)```, holding all other variables constant.
 
-####Question 3: Testing the significance of the linear relationship observed in the data.
+###Question 3: Testing the significance of the linear relationship observed in the data.
 (i) Find a 99% confidence interval for the parameters corresponding to all predictors plus the intercept.
 
 ```{r warning=F, message=F,cache=TRUE}
@@ -93,4 +93,21 @@ confint(object = method, level = 0.99)
 **Intercept, age, ym, religous, occupation, rate** are significant at the level  $\alpha$ = 0.01.
 For variables that are not significant, **Sexmale: p = 0.4791, childyes: p = 0.9793, education: p = 0.9715**.
 
-####Question 4: Goodness of Fit.
+###Question 4: Goodness of Fit.
+(i) Perform a goodness of fit test for the model? Does the model fit the data well?
+```{r warning=F, message=F,cache=TRUE}
+with(method, cbind(res.deviance = deviance, df = df.residual,
+               p = pchisq(deviance, df.residual, lower.tail=FALSE)))
+
+
+```
+
+
+(ii) Residual Analysis
+
+Produce the following deviance residual plots: 1) Scatterplot of religious against the residuals, 2) Boxplot of the residuals by sex, 3) QQPlot of the residuals, 4) Histogram of the residuals. Comment on the plots.
+
+
+###Question 5: Prediction.
+
+Provide the estimated number of extramarital affairs engaged for the past year and its 99% confidence interval of a 45-year-old man with 15 years of marriage with a child. The man is somewhat religious (religious = 4), has a bachelor degree (education = 16), is a sales clerk (occupation = 5) and has ambivalent feeling towards his marriage (rate = 3) 
