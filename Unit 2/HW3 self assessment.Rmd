@@ -13,12 +13,43 @@ $SS_{X_{1}} = 981.326$
 
 $SS_{X_{2}|X_{1}} = 190.232$
 
-$SS_{X_{3}|X_{2},X_{1}} = 190.232$
+$SS_{X_{3}|X_{2},X_{1}} = 129.431$
 
 $SS_{full} =SS_{X_{1}}+SS_{X_{2}|X_{1}}+SS_{X_{3}|X_{2},X_{1}}=981.326+190.232+129.431=1300.989$
 
-$MSE_{full}=\dfrac{SS_{full}}{n}=59.136$
+$MSE_{X_1}=\dfrac{SS_{full}}{n}=59.136$
 
-#$F_{partial}=\frac{\frac{RSS_{Reduced}-RSS_{Full}}{\delta\#predictors(full-reduced)}}{\frac{RSS_{Full}}{n-k}}=$
+#$F_{partial}=\frac{\frac{RSS_{Reduced}-RSS_{Full}}{\delta\#predictors(full-reduced)}}{\frac{RSS_{Full}}{n-k}}$
 
-1. when $X_{1}$ enters the model. $F_{X_{1}}=\dfrac{SS_{X_{1}}}{MSE_{X_{1}}}=22$
+
+1. when $X_{1}$ enters the model. null hypothesis is: $\beta_{X1}=0$. The alternative hypothesis is  $\beta_{X1}\neq0$
+
+$F_1=\dfrac{MSR_{X1}}{MSE_{full}}=\dfrac{\dfrac{SSreg_{X1}}{df_{X1}}}{\dfrac{SSE_{full}}{{df(n-q-1)}}}=\dfrac{\dfrac{981.326}{1}}{\dfrac{442.292}{18}}=39.93711$
+
+when $X_{2}$ enters the model. null hypothesis is: $\beta_{X1}=\beta_{X2}=0$. The alternative hypothesis is either $\beta_{X1} or/and \beta_{X1} \neq0$
+
+$F_2=\dfrac{MSR_{X2}}{MSE_{full}}=\dfrac{\dfrac{SSreg_{X2}}{df_{X2}}}{\dfrac{SSE_{full}}{{df(n-q-1)}}}=\dfrac{\dfrac{190.232}{1}}{\dfrac{442.292}{18}}=7.74189$
+
+when $X_{3}$ enters the model. null hypothesis is: $\beta_{X1}=\beta_{X2}=\beta_{X3}=0$. The alternative hypothesis is either $\beta_{X1} or/and \beta_{X1}or/and \beta_{X3}\neq0$
+
+$F_3=\dfrac{MSR_{X3}}{MSE_{full}}=\dfrac{\dfrac{SSreg_{X3}}{df_{X3}}}{\dfrac{SSE_{full}}{{df(n-q-1)}}}=\dfrac{\dfrac{129.431}{1}}{\dfrac{442.292}{18}}=5.267466$
+
+```{r }
+pf(39.93711,1,18, lower.tail=F)  #P1
+pf(7.74189,1,18, lower.tail=F) #P2
+pf(5.267466,1,18, lower.tail=F)  #P3
+```
+
+2. (b) Test for the significance of adding both $X_2$ and $X_3$ to a model already containing $X_1$. State the test: the null hypothesis in terms of regression coefficient parameters, the value of the test statistic and the p-value of the statistic. Interpret at a significance level of 0.01.
+
+Null hypothesis: $\beta_{X2}=\beta_{X3}=\beta_{X3}=0$. The alternative hypothesis is either $\beta_{X2} or/and \beta_{X3}\neq0$
+
+###$F_{partial}=\frac{\frac{RSS_{full}-RSS_{reduced}}{\delta\#predictors(full-reduced)}}{\frac{RSS_{Full}}{n-k}}=\frac{\frac{RSS_{X1,X2,X3}-RSS_{X1}}{\delta\#predictors(X1,X2,X3-X1)}}{\frac{SSE_{Full}}{18}}=\frac{\frac{1300.989-981.326}{2}}{\frac{442.292}{18}}=13.00936$
+
+```{r }
+pf(13.00936,2,18, lower.tail=F)  #P
+```
+
+(c) In terms of the regression sums of squares (SSReg), identify the test that corresponds to comparing the two models:
+
+Because the table above has a special order that does not fit the two models. It need to be in the order of X3, X1|X3, X2|X1,X3

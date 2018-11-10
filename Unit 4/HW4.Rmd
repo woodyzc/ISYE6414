@@ -6,7 +6,7 @@ output: html_document
 ---
 
 ```{r setup, include=FALSE}
-#setwd("~/Desktop/ISYE6414/Unit 4")
+setwd("~/Desktop/ISYE6414/Unit 4")
 
 library(ggplot2)
 library(dplyr)
@@ -22,12 +22,12 @@ affair = read.table('affair.csv',header = T, stringsAsFactors = F, sep = ',')%>%
 
 
 ```{r warning=FALSE, message=FALSE, cache=TRUE}
-p1 = ggplot(affair, aes(x=affair$age,y=log(affair$nbaffairs+1)))+geom_count()+xlab('Age')+ylab('number of affairs')+scale_y_continuous(limits = c(-0.5, 3))
-p2 = ggplot(affair, aes(x= affair$ym,y=log(affair$nbaffairs+1)))+geom_count()+xlab('Number of years married')+ylab('number of affairs')+scale_y_continuous(limits = c(-0.5, 3))
-p3 = ggplot(affair, aes(x=affair$religious,y=log(affair$nbaffairs+1)))+geom_count()+xlab('how religious is the subject ')+ylab('number of affairs')+scale_y_continuous(limits = c(-0.5, 3))
-p4 = ggplot(affair, aes(x= affair$education,y=log(affair$nbaffairs+1)))+geom_count()+xlab('Number of years the subject has received full time education')+ylab('number of affairs')+scale_y_continuous(limits = c(-0.5, 3))
-p5 = ggplot(affair, aes(x= affair$occupation,y=log(affair$nbaffairs+1)))+geom_count()+xlab('how prestigious is the subject’s occupation')+ylab('number of affairs')+scale_y_continuous(limits = c(-0.5, 3))
-p6 = ggplot(affair, aes(x= affair$rate,y=log(affair$nbaffairs+1)))+geom_count()+xlab('how satisfied does the subject rates his/her marriage')+ylab('number of affairs')+scale_y_continuous(limits = c(-0.5, 3))
+p1 = ggplot(affair, aes(x=affair$age,y=log(affair$nbaffairs+1)))+geom_count()+xlab('Age')+ylab('log(affairs)')+scale_y_continuous(limits = c(-0.5, 3))
+p2 = ggplot(affair, aes(x= affair$ym,y=log(affair$nbaffairs+1)))+geom_count()+xlab('Number of years married')+ylab('log(affairs)')+scale_y_continuous(limits = c(-0.5, 3))
+p3 = ggplot(affair, aes(x=affair$religious,y=log(affair$nbaffairs+1)))+geom_count()+xlab('how religious is the subject ')+ylab('log(affairs)')+scale_y_continuous(limits = c(-0.5, 3))
+p4 = ggplot(affair, aes(x= affair$education,y=log(affair$nbaffairs+1)))+geom_count()+xlab('Number of years the subject has received full time education')+ylab('log(affairs)')+scale_y_continuous(limits = c(-0.5, 3))
+p5 = ggplot(affair, aes(x= affair$occupation,y=log(affair$nbaffairs+1)))+geom_count()+xlab('how prestigious is the subject’s occupation')+ylab('log(affairs)')+scale_y_continuous(limits = c(-0.5, 3))
+p6 = ggplot(affair, aes(x= affair$rate,y=log(affair$nbaffairs+1)))+geom_count()+xlab('how satisfied does the subject rates his/her marriage')+ylab('log(affairs)')+scale_y_continuous(limits = c(-0.5, 3))
 grid.arrange(p1,p2,p3,p4,p5,p6)
 cor1 = cor(x= affair$age,y=log(affair$nbaffairs+1))
 cor2 = cor(x= affair$ym,y=log(affair$nbaffairs+1))
@@ -37,11 +37,11 @@ cor5 = cor(x= affair$occupation,y=log(affair$nbaffairs+1))
 cor6 = cor(x= affair$rate,y=log(affair$nbaffairs+1))
 ```
 
-There are 6 numeric independent variables. They are **Age,Number of years married, Education, Religous, occupation and rate**.
+There are 6 numeric independent variables. They are **Age,Number of years married, Religous, Education, Occupation and Rate**.
 
 Based on scatterplots, It seems that there is no apprent relatonship between number of affairs and those three numeric independent variables.
 
-The correlation coefficinets between log(naffairs+1) and Age,Number of years married, Education are **```r c(cor1, cor2, cor3, cor4, cor5, cor6)```**. The correlation coefficient between number of affairs and number of years married and how religous is the subject are slightly larger than 0.15, which indicates a **very very mild** relationship. The correlation coefficient between number of affairs and how satisfied does the subject rates his/her marriage is larger than 0.25, which indicates a **mild** relationship. The rest are very close to 0, which means no correlation.
+The correlation coefficinets between log(naffairs+1) and Age,Number of years married, Religous, Education, Occupation and Rate are **```r c(cor1, cor2, cor3, cor4, cor5, cor6)```**. The correlation coefficient between number of affairs and number of years married and how religous is the subject are slightly larger than 0.15, which indicates a **very very mild** relationship. The correlation coefficient between number of affairs and how satisfied does the subject rates his/her marriage is larger than 0.25, which indicates a **mild** relationship. The rest are very close to 0, which means no correlation.
 
 2. Describe the relationship between the log transform of the number of extramarital affairs and the categorical independent variables sex and child. Do the log transform vary with the categorical variables?
 ```{r warning=FALSE, message=F,cache=TRUE}
@@ -99,15 +99,49 @@ For variables that are not significant, **Sexmale: p = 0.4791, childyes: p = 0.9
 with(method, cbind(res.deviance = deviance, df = df.residual,
                p = pchisq(deviance, df.residual, lower.tail=FALSE)))
 
-
 ```
 
+Since the **p value is close to 0**, it indicates that the model is **not a good fit**.
 
 (ii) Residual Analysis
 
 Produce the following deviance residual plots: 1) Scatterplot of religious against the residuals, 2) Boxplot of the residuals by sex, 3) QQPlot of the residuals, 4) Histogram of the residuals. Comment on the plots.
+```{r warning=F, message=F,cache=TRUE}
+res = resid(method,type="deviance")
+p1 =  ggplot(data = affair, aes(x=affair$religious, y=res))+geom_point(shape =1)+xlab('Religous')+geom_hline(yintercept=0,color ='red')
+p2 = ggplot(data = affair, aes(x=affair$sex, y=res))+geom_boxplot()+xlab('Sex')
+p3 = ggplot(data = affair, aes(x=res))+geom_histogram()
+grid.arrange(p1, p2, p3)
 
+qqnorm(res, ylab="Std residuals")
+qqline(res,col="blue",lwd=2)
+
+```
+
+For the scatterplot, the residues shift slightly towards above 0, which means that the residues are not evenly scattered around 0. Thus the linearity assumption does not hold.
+For the boxplot, the meadian of residuals are smaller than 0, approximately around -1, and there are a lot outliers. Thus the linearity assumption does not hold.
+For the histograme of the residuals, marjority of the residuals are smaller than 0. It is not normally distributed. Thus the normality assumption does not hold.
+For the qqplot, there are significant departures at both end. Thus the normality assumption does not hold.
 
 ###Question 5: Prediction.
 
 Provide the estimated number of extramarital affairs engaged for the past year and its 99% confidence interval of a 45-year-old man with 15 years of marriage with a child. The man is somewhat religious (religious = 4), has a bachelor degree (education = 16), is a sales clerk (occupation = 5) and has ambivalent feeling towards his marriage (rate = 3) 
+
+```{r warning=F, message=F,cache=TRUE}
+newdata = data.frame('sex'='male', 'age'=45, 'ym'=15, 'child'='yes', 'religious'=4, 'education'=16, 'occupation'=5,'rate'=3)
+
+#obtain the prediction on the scale of linear predictors
+response = predict(object = method, newdata=newdata, type = 'link', se.fit = T)
+
+#Get the upper and lower ends in the scale of linear predictors
+upper = response$fit+2.576*response$se.fit
+lower = response$fit-2.576*response$se.fit
+fit = response$fit
+
+#apply the link function "log" to response, upper and lower to get the results in the scale of response
+fit = method$family$linkinv(fit)
+upper = method$family$linkinv(upper)
+lower = method$family$linkinv(lower)
+```
+
+The prediction is **```r fit```**, with upper end **```r upper```**, lower end **```r lower```** for 99% confidence interval.

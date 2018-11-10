@@ -1,0 +1,35 @@
+---
+title: "HW4 self"
+author: "Chong Zhang"
+date: "November 9, 2018"
+output: html_document
+---
+###A. Buying a Car
+a. What is the formula of the estimated probability for a family to buy a car given its income and the age of the car the family owns?
+
+$Ln(\dfrac{p}{1-p})=-4.739+0.0677*income+0.5986*age$
+
+$p =\dfrac{e^{-4.739+0.0677*income+0.5986*age}}{1+e^{-4.739+0.0677*income+0.5986*age}}$
+
+b. Identify the coefficient for the regressor age and interpret.
+
+**income: 0.06773**
+**age: 0.59863**
+
+c. Perform a hypothesis testing procedure for the statistical significance of the regression coefficients corresponding to the income factor. Interpret at alpha = 0.05.
+
+```{r}
+p = 0.06773/0.2806
+2*pnorm(p)
+```
+
+d. Estimate the probability that a family with $70,000.00 an income whose oldest car is 4 years old buys a new car in the following year.
+
+e. What can you say about the reliability of the statistical significance of the regression coefficients for this data example? Provide supporting arguments for your answer.
+
+
+```{r setup, include=FALSE}
+
+
+
+```

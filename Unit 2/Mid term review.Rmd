@@ -1,0 +1,16 @@
+---
+title: "Mid term review"
+author: "Chong Zhang"
+date: "October 4, 2018"
+output: html_document
+---
+
+Total Sum of Squares (**TSS**): $\sum_{i}{(y_i-\bar{y})^2}$
+
+Regression sum of squares(**$SS_{reg}$**): $\sum_{i}{(\hat{y}_i-\bar{y})^2}$
+
+Error sum of squares(**SSE**) or Residual sum of squares (**RSS**): $\sum_{i}{(y_i-\hat{y_i})^2}=\sum_{i}{(y_i-f(x_i))^2}$
+
+**$SST = SSE + SSR$**
+
+#$F_{partial}=\frac{\frac{RSS_{Reduced}-RSS_{Full}}{\delta\#predictors(full-reduced)}}{\frac{RSS_{Full}}{n-k}}=$
