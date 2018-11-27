@@ -11,6 +11,8 @@ library(ggplot2)
 library(glmnet)
 library(MASS)
 library(car)
+library(corrplot)
+
 
 load(file = 'AmesHousing.RData')
 attach(house)
@@ -26,6 +28,17 @@ scatterplotMatrix(~SalePrice+Garage.Finish+Garage.Cars+Garage.Area+Paved.Drive,d
 scatterplotMatrix(~SalePrice+Wood.Deck.SF+Open.Porch.SF+Enclosed.Porch+X3Ssn.Porch,data = house, smooth=FALSE)
 scatterplotMatrix(~SalePrice+Screen.Porch+Pool.Area+Fence+Sale.Type,data = house, smooth=FALSE)
 scatterplotMatrix(~SalePrice+Sale.Condition+Yr.Sold+Bath,data = house, smooth=FALSE)
+
+```
+
+The distribution of SalePrice is hightly skewed. There are couple of predicting variables shows high level of linearality with SalePrice. Some do not show significant level of linearity. 
+
+(b)
+
+```{r cache=TRUE}
+X = model.matrix(lm(SalePrice~., data = house))[,-1]
+X = cbind(SalePrice, X)
+corrplot(cor(X), tl.cex = 0.1)
 
 
 ```
