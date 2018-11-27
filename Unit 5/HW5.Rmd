@@ -16,4 +16,7 @@ load(file = 'AmesHousing.RData')
 attach(house)
 scatterplotMatrix(~SalePrice+MS.Zoning+Lot.Area+Lot.Shape+Land.Contour,data = house, smooth=FALSE)
 scatterplotMatrix(~SalePrice+Neighborhood+Condition.1+Bldg.Type+House.Style,data = house, smooth=FALSE)
+scatterplotMatrix(~SalePrice+Overall.Qual+Overall.Cond+Year.Built+Year.Remod.Add, smooth=FALSE)
+scatterplotMatrix(~SalePrice+Roof.Style++Mas.Vnr.Type+Mas.Vnr.Area+Exter.Qual,data = house, smooth=FALSE)
+scatterplotMatrix(~SalePrice+Exter.Cond+Foundation+Bsmt.Qual+Bsmt.Cond,data = house, smooth=FALSE)
 ```
