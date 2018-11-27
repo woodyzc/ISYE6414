@@ -1,0 +1,101 @@
+---
+title: "Midterm"
+author: "Chong Zhang"
+date: "October 13, 2018"
+output: html_document
+---
+
+```{r warning=FALSE, message=FALSE}
+library(ggplot2)
+library(dplyr)
+library(gridExtra)
+library(car)
+data_table = read.table('fat.csv', header = T, sep = ',')
+
+```
+
+####1. Perform exploratory data analysis: calculate the sample mean, sample variance, draw the histogram and test the normality assumption of the response variable brozek and one predicting variable density. What is the relationship between the two variables? Comment on the shape of the distribution for the two variables. 
+
+```{r warning=FALSE, message=FALSE}
+sample_mean_brozek = mean(data_table$brozek)
+sample_mean_density = mean(data_table$density)
+sample_variance_brozek = var(data_table$brozek)
+sample_variance_density = var(data_table$density)
+cor_brozek_density = cor(data_table$brozek,data_table$density)
+
+p_brozek = ggplot(data= data_table,aes(brozek))+geom_histogram()+xlab('Brozek')+ylab('Count')+theme(axis.title =element_text(size=12))+ggtitle('Normality Assumption for Brozek')
+p_density = ggplot(data= data_table,aes(density))+geom_histogram()+xlab('Density')+ylab('Count')+theme(axis.title =element_text(size=12))+ggtitle('Normality Assumption for Density')
+p_cor = ggplot(data= data_table,aes(density,brozek))+geom_point()+xlab('Density')+ylab('Brozek')+theme(axis.title =element_text(size=12))+ggtitle('Relationship between Brozek and Density')
+
+grid.arrange(p_brozek, p_density,p_cor)
+```
+
+As we can see from the data the **sample mean for Brozek is ```r sample_mean_brozek```**, and **the sample variance for Brozek is ```r sample_variance_brozek```**. The **sample mean for denasity is ```r sample_mean_density```**, and **the sample variance for density is 0.00036`**. The **correlation between Brozek and Density is ```r cor_brozek_density```**. Since it is so close to -1, it means that there is an almost perfect linear relationship between Brozek and Density.
+
+The histogram of both variables are shown above. It seems that both variables follow normal distribution.
+
+####2.Fit a multiple linear regression model named 'model1' using brozek as the response variable and all predicting variables described above. Calculate the mean square error of this model (i.e., MSE=). Is the model a good fit? Does the model have predictive power? Explain in detail.
+
+```{r warning=FALSE,message=FALSE}
+model = lm(brozek~., data = data_table)
+summary(model)
+MSE = sum((model$fitted.values-data_table$brozek)^2)/length(data_table$brozek)
+```
+The mean square error of this model is **```r round(MSE,6)```**. The R-square is **0.9995**, the adjusted-R-square is **0.9995**. Measn Square Error is an estimate of the standard deviation of the random component in the data. An MSE value closer to 0 indicates a fit that is more useful for prediction. R-square means the proportion of the variance in the dependent variable that is predictable from the independent variables. The closer R-square to 1, the better the model fits the data. Thus both MSE and R-square suggests that the model fit the data very nicely and have a strong predictive power.
+
+####3. Fit a multiple linear regression model named 'model2' using brozek as the response variable and only the significant predicting variables from model1 (with p-value<0.05). Write down the fitted equation and calculate the mean square error of this model. Use partial F-test to see whether the other predicting variables except for the variables from model2 contribute significant information to the response variable brozek.
+```{r message=FALSE, warning=FALSE}
+model2 = lm(brozek~siri+density+weight+free+thigh+knee+biceps,data = data_table)
+MSE_2 = sum((model2$fitted.values-data_table$brozek)^2)/length(data_table$brozek)
+summary(model2)
+anova(model2,model)
+
+```
+The fitted equation of model2 is **$brozek=0.8967*siri-9.433*density+0.0045*weight-0.0041*free+0.0094*thigh-0.0212*knee-0.0093*biceps$**. The mean square error of model2 is **```r MSE_2```**
+Bease on the F-partial test using anova function in r, I found that the **p-value for the F-parital test is 0.3463**, which is bigger than 0.05. Thus it indicates that the other predicting variables except for the variables from model2 **didn't** contribute significant information to the response variable brozek.
+
+
+#### 4. Perform the residual analysis and check whether there is any multicollinearity among the predicting variables from model2.
+
+```{r warning=FALSE, message=FALSE}
+p1=ggplot(data= model2, aes(x=model2$fitted.values, y=model2$residuals))+geom_point(shape=1, size=2)+xlab('Fitted Brozek')+ylab('Residuals')+theme(axis.title=element_text(size=12))+geom_hline(yintercept = 0)+ggtitle('Constant Variance/\nIndependence Assumption')
+
+p2 =ggplot(data= data_table,aes(x=data_table$siri,y=model2$residuals))+geom_point(shape=1,size=2)+xlab('siri')+ylab('Residuals')+theme(axis.title = element_text(size=12))+geom_hline(yintercept=0)+ggtitle('Linearity Assumption')
+
+p3 =ggplot(data= data_table,aes(x=data_table$density,y=model2$residuals))+geom_point(shape=1,size=2)+xlab('density')+ylab('Residuals')+theme(axis.title=element_text(size=12))+geom_hline(yintercept=0)+ggtitle('Linearity Assumption')
+
+p4 =ggplot(data= data_table,aes(x=data_table$weight,y=model2$residuals))+geom_point(shape=1,size=2)+xlab('weight')+ylab('Residuals')+theme(axis.title = element_text(size=12))+geom_hline(yintercept = 0)+ggtitle('Linearity Assumption')
+
+p5 =ggplot(data= data_table,aes(x=data_table$free,y=model2$residuals))+geom_point(shape=1,size=2)+xlab('free')+ylab('Residuals')+theme(axis.title =element_text(size=12))+geom_hline(yintercept = 0)+ggtitle('Linearity Assumption')
+
+p6 =ggplot(data= data_table,aes(x=data_table$thigh,y=model2$residuals))+geom_point(shape=1,size=2)+xlab('high')+ylab('Residuals')+theme(axis.title =element_text(size=12))+geom_hline(yintercept = 0)+ggtitle('Linearity Assumption')
+
+p7 =ggplot(data= data_table,aes(x=data_table$knee,y=model2$residuals))+geom_point(shape=1,size=2)+xlab('knee')+ylab('Residuals')+theme(axis.title =element_text(size=12))+geom_hline(yintercept = 0)+ggtitle('Linearity Assumption')
+
+p8 =ggplot(data= data_table,aes(x=data_table$biceps,y=model2$residuals))+geom_point(shape=1,size=2)+xlab('biceps')+ylab('Residuals')+theme(axis.title =element_text(size=12))+geom_hline(yintercept = 0)+ggtitle('Linearity Assumption')
+
+p9 = ggplot(data= data_table,aes(model2$residuals))+geom_histogram()+xlab('Residuals')+ylab('Count')+theme(axis.title =element_text(size=12))+ggtitle('Normality Assumption')
+
+grid.arrange(p1,p2,p3,p4,p5,p6,p7,p8,p9)
+
+qqnorm(model2$residuals)
+qqline(model2$residuals)
+
+cor(data_table[c(2,3,5,8,13,14,15)])
+vif_thershold = max(10, 1/(1-summary(model2)$r.squared))
+vif(model2)
+```
+
+**Constant Variance Assumption**:  I plot the residuals against the fitted values. All the residuals are distributed around 0. It also seems that the variance is constant across all the fitted values. Thus the **Constant Variance Assumption holds**. 
+
+**Independence Assumption** It seems that there is no clusters of residuals which means that the error terms are not correlated. Thus **Independence Assumption hold**.
+
+**Linearity Assumption** I plot the residuals against each predictiing variable. All the plots show residuals distribut equally around the y=0 line. Thus it indicates that **Linearity Assumption holds**.
+
+**Normality assumption** I use the QQ plot to study the normality assumption. Plot the residuals against the theoretical quantiles.  The residuals approximately follow a straight line with some exception at both ends. Thus it suggests that the **Normality assumption holds**.
+
+
+I calculate the correlation between all the predicting variables in model2 as above. some of them have correlation close to 1, which indicating possible multicollinearity. However **Variance Inflation Factor** were calculated for each predicting variables in model2 as shown above. Since the thershold of VIF for model2 is ```r vif_thershold```, and the VIFs of each predicting variables are smaller than  ```r vif_thershold```, thus VIF indicates there is no multicollinearity among the predicting variables from model2.
+
+####5. Compare model1 and model2, which model is better? Explain in detail.
+Both model have very similar R-squared and adjusted-R-squared. However model2 has much fewer predicting variables which makes it more concise. Generally, a model with fewer predictors and about the same "explanatory power: R-squared" is better. A model with more variables could suffer from multicollinearity, because the more variables you include, the higher the chance some of those variables could be linear independent.  The more predictors included in the model, the more variability could be introduced in. Also this could lead to overfitting, the model will be biased. A model with less variables requires less data to be collected. This saves time and money.

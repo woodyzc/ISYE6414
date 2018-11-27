@@ -19,17 +19,82 @@ b. Identify the coefficient for the regressor age and interpret.
 c. Perform a hypothesis testing procedure for the statistical significance of the regression coefficients corresponding to the income factor. Interpret at alpha = 0.05.
 
 ```{r}
-p = 0.06773/0.2806
-2*pnorm(p)
+z = 0.06773/0.02806
+2*pnorm(z,lower.tail = F)
 ```
 
 d. Estimate the probability that a family with $70,000.00 an income whose oldest car is 4 years old buys a new car in the following year.
+**0.916**
+
 
 e. What can you say about the reliability of the statistical significance of the regression coefficients for this data example? Provide supporting arguments for your answer.
+**Both intercept and income are significant, however age is not.**
 
 
-```{r setup, include=FALSE}
+###B. Simulation Example
+a. Analyze the data using Poisson regression; obtain both point estimates and confidence intervals for the regression coefficients. Provide the R output and interpret in relation to the true parameters for the model you generated data from.
+
+```{r cache=TRUE}
+x=1:10/10
+mu = exp(3+0.2*x)
+y = rpois(10, mu)
+z = as.data.frame(cbind(y,x))
+method = glm(formula = y~x, data = z, family = 'poisson')
+fitted(method)
+summary(method)
+confint(method)
+plot(fitted(method), y)
+```
 
 
+b. Repeat the data generation process for 100 times. You can use the for loop in R for repeating the data generation.  Set a seed to 1 before the loop in order to reproduce random numbers.   
+
+```{r, cache=T, message=FALSE, warning=FALSE}
+set.seed(1)
+intcover = 0
+xcover=0
+
+for (i in 1:100){
+  N=10
+  x=1:N/N
+  mu = exp(3+0.2*x)
+  y=rpois(N,mu)
+  model = glm(y~x,family = 'poisson')
+  CI = confint(model,level = 0.95)
+  intcover = intcover +(CI[1,1]<3 &CI[1,2]>3)
+  xcover = xcover+(CI[2,1]<0.2 & CI[2,2]>0.2)
+}
+intcover
+xcover
 
 ```
+
+How many times the estimated confidence intervals include the true parameters? Interpret.
+**97 times are included.**
+
+c. Generate data as in part (a) except that this time you will generate with  for . Repeat 100 times. How many times the estimated confidence intervals include the true parameters? Interpret.
+```{r cache=TRUE, warning=FALSE, message=FALSE}
+set.seed(1)
+intcover = 0
+xcover=0
+
+for (i in 1:100){
+  N=1000
+  x=1:N/N
+  mu = exp(3+0.2*x)
+  y=rpois(N,mu)
+  model = glm(y~x,family = 'poisson')
+  CI = confint(model,level = 0.95)
+  intcover = intcover +(CI[1,1]<3 &CI[1,2]>3)
+  xcover = xcover+(CI[2,1]<0.2 & CI[2,2]>0.2)
+}
+intcover
+xcover
+
+```
+
+93 time are included. 
+
+d. Are the answers for part (b) and (c) different? Why?
+They are differnt. Because the sample number of part b is not large enough as part c. Possion regression requires large sample size to make acurate statistic inferrence.
+

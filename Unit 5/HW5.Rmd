@@ -19,4 +19,13 @@ scatterplotMatrix(~SalePrice+Neighborhood+Condition.1+Bldg.Type+House.Style,data
 scatterplotMatrix(~SalePrice+Overall.Qual+Overall.Cond+Year.Built+Year.Remod.Add, smooth=FALSE)
 scatterplotMatrix(~SalePrice+Roof.Style++Mas.Vnr.Type+Mas.Vnr.Area+Exter.Qual,data = house, smooth=FALSE)
 scatterplotMatrix(~SalePrice+Exter.Cond+Foundation+Bsmt.Qual+Bsmt.Cond,data = house, smooth=FALSE)
+scatterplotMatrix(~SalePrice+BsmtFin.SF+Total.Bsmt.SF+Heating.QC+Central.Air, data = house, smooth=FALSE)
+scatterplotMatrix(~SalePrice+X1st.Flr.SF+Gr.Liv.Area+Bedroom.AbvGr+Kitchen.Qual,data = house, smooth=FALSE)
+scatterplotMatrix(~SalePrice+TotRms.AbvGrd+Fireplaces+Fireplace.Qu+Garage.Type,data = house, smooth=FALSE)
+scatterplotMatrix(~SalePrice+Garage.Finish+Garage.Cars+Garage.Area+Paved.Drive,data = house, smooth=FALSE)
+scatterplotMatrix(~SalePrice+Wood.Deck.SF+Open.Porch.SF+Enclosed.Porch+X3Ssn.Porch,data = house, smooth=FALSE)
+scatterplotMatrix(~SalePrice+Screen.Porch+Pool.Area+Fence+Sale.Type,data = house, smooth=FALSE)
+scatterplotMatrix(~SalePrice+Sale.Condition+Yr.Sold+Bath,data = house, smooth=FALSE)
+
+
 ```
