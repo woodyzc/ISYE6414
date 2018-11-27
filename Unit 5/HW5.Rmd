@@ -1,0 +1,19 @@
+---
+title: "HW5"
+author: "Chong Zhang"
+date: "November 26, 2018"
+output: html_document
+---
+
+```{r cache=TRUE}
+library(dplyr)
+library(ggplot2)
+library(glmnet)
+library(MASS)
+library(car)
+
+load(file = 'AmesHousing.RData')
+attach(house)
+scatterplotMatrix(~SalePrice+MS.Zoning+Lot.Area+Lot.Shape+Land.Contour,data = house, smooth=FALSE)
+scatterplotMatrix(~SalePrice+Neighborhood+Condition.1+Bldg.Type+House.Style,data = house, smooth=FALSE)
+```
