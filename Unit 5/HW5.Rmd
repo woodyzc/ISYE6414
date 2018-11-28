@@ -10,7 +10,6 @@ library(dplyr)
 library(ggplot2)
 library(glmnet)
 library(MASS)
-library(car)
 library(corrplot)
 
 
@@ -68,6 +67,17 @@ However when I plot SalePrice against the residuels, I found that there was a de
 
 (b)
 ```{r cache=TRUE}
+boxCox(model)
+best.lam = bc$x[which(bc$y==max(bc$y))]
+```
+
+best lambda is 0.141414141
+
+(c)
+```{r cache=TRUE}
+model_log = lm(log(SalePrice)~., data = house)
+plot(x=fitted(model_log),y=residuals(model_log))
+abline(h=0, col='red')
 
 
 ```
