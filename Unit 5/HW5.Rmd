@@ -36,9 +36,38 @@ The distribution of SalePrice is hightly skewed. There are couple of predicting 
 (b)
 
 ```{r cache=TRUE}
-X = model.matrix(lm(SalePrice~., data = house))[,-1]
-X = cbind(SalePrice, X)
+X = model.matrix(lm(house$SalePrice~., data = house))[,-1]
+X = cbind(house$SalePrice, X)
 corrplot(cor(X), tl.cex = 0.1)
+```
+
+There are 18 predictors that correlate strongly with SalePrice.
+Yes, there is evidence showing multicollinearity based on the graph. For example, Garage.Cars tend to corrlated strongly with Garage.Area. Because the larger the size of the garage, the more cars you can put in the garage.
+
+Question 2:
+```{r cache=TRUE}
+model = lm(SalePrice~., data = house)
+plot(house$Lot.Area,model$residuals)
+abline(h=0,col='red')
+plot(house$SalePrice, model$residuals)
+abline(h=0,col='red')
+plot(house$Year.Built, model$residuals)
+abline(h=0,col='red')
+plot(house$Mas.Vnr.Area, model$residuals)
+abline(h=0,col='red')
+plot(house$Garage.Area, model$residuals)
+abline(h=0,col='red')
+plot(house$Open.Porch.SF, model$residuals)
+abline(h=0,col='red')
+plot(fitted(model), model$residuals)
+abline(h=0,col='red')
+```
+
+I have plotted couple of predicting variables against the residules of the model. It seems that overall, the variance is constant for different values of the predicting variables.
+However when I plot SalePrice against the residuels, I found that there was a departure at the right tail of the graph.
+
+(b)
+```{r cache=TRUE}
 
 
 ```
