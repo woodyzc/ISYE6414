@@ -67,7 +67,7 @@ However when I plot SalePrice against the residuels, I found that there was a de
 
 (b)
 ```{r cache=TRUE}
-boxCox(model)
+bc = boxcox(model)
 best.lam = bc$x[which(bc$y==max(bc$y))]
 ```
 
@@ -81,3 +81,27 @@ abline(h=0, col='red')
 
 
 ```
+
+Yes, it seems there is at least 3 outliers.
+
+(d)
+```{r cache=TRUE}
+cook = cooks.distance(model_log)
+cook = as.data.frame(cbind(index=1:length(SalePrice), cooksd = cook))
+p = ggplot(data = cook,aes(x=index, y = cooksd)) + geom_point(col='red')+xlab('Index')+ylab('Cook\'s distance')+theme(axis.title = element_text(size=12))
+p = p + geom_hline(yintercept = 1, col='blue')
+p = p + geom_text(aes(label = ifelse(cooksd>1, index,'')),hjust=-0.1, vjust=0.01)
+p
+
+```
+
+After compute the cook's distance, I found that there is no points whose cook's distance is larger than 1. So no observation was removed.
+
+(e)
+```{r cache=TRUE}
+qqnorm(model_log$residuals)
+qqline(model_log$residuals)
+
+```
+
+
