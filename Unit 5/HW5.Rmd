@@ -86,22 +86,115 @@ Yes, it seems there is at least 3 outliers.
 
 (d)
 ```{r cache=TRUE}
-cook = cooks.distance(model_log)
+library(car)
+cook = cooks.distance(model)
 cook = as.data.frame(cbind(index=1:length(SalePrice), cooksd = cook))
 p = ggplot(data = cook,aes(x=index, y = cooksd)) + geom_point(col='red')+xlab('Index')+ylab('Cook\'s distance')+theme(axis.title = element_text(size=12))
 p = p + geom_hline(yintercept = 1, col='blue')
 p = p + geom_text(aes(label = ifelse(cooksd>1, index,'')),hjust=-0.1, vjust=0.01)
 p
-
+influencePlot(model_log)
+plot(cook)
 ```
 
 After compute the cook's distance, I found that there is no points whose cook's distance is larger than 1. So no observation was removed.
 
 (e)
 ```{r cache=TRUE}
-qqnorm(model_log$residuals)
-qqline(model_log$residuals)
+qqnorm(model$residuals)
+qqline(model$residuals)
+
+```
+
+There are departures at both ends of the QQ plot, indicating that the normality assumption may not hold. Thus the estimation of and inference on the regression coefficients might not be reliable.
+
+Question 3: Variable Selection via Stepwise Regression
+(a)
+```{r cache=TRUE}
+summary(model)
+drop_result = drop1(model)
+a = which(drop_result$AIC==max(drop_result$AIC))
+b = which(drop_result$AIC==min(drop_result$AIC))
+drop_result[a,]
+drop_result[b,]
+```
+
+
+It seems that by dropping Yr.sold can improve AIC the most. Dropping Neighborhood affect the AIC the most.
+
+
+(b)
+```{r cache=TRUE}
+final_model = stepAIC(model)
+length(final_model$coefficients)
+```
+
+There are 81 coefficients in the final model. The final AIC is 56620.99.
+
+(c)
+```{r cache=TRUE}
+forward_model = step(model,direction = 'forward')
+length(forward_model$coefficients)
+backward_model = step(model, direction = 'backward')
+length(backward_model$coefficients)
+both = step(model, direction = 'both')
+length(both$coefficients)
+
+anova(forward_model,both)
+anova(backward_model,both)
+
+```
+
+Forward model selected 96 coefficients, backward model selected 81 coefficients, whereas the forward-backward model selected 81 coefficients. Partial F-test by ANOVA suggesting that the extra number of variables included in the forward_model do not contribute significant information to the SalePrice once all the variables in the both model have been taken into consideration. Thus their coeiffients tend to be 0.
+
+Question 4: Variable Selection via LASSO and Elastic Net
+
+(a)
+```{r cache=TRUE}
+lasso_cv = cv.glmnet(x = model.matrix(~.,house[-47]),y = house$SalePrice,alpha = 1,nfolds = 10)
+lasso = glmnet(x = model.matrix(~.,house[-47]),y = house$SalePrice,alpha = 1, nlambda = 100)
+plot(lasso, xvar='lambda',label=TRUE, lwd=2)
+abline(v=log(lasso_cv$lambda.min),col='black',lty=2,lwd=2)
+
+x = which(lasso_cv$lambda==lasso_cv$lambda.min)
+lasso_cv$nzero[x]
+
+```
+
+The best lambda is ```r round(lasso_cv$lambda.min)```. 82 out of 95 model coefficients are not zero in te fit.
+
+(b)
+
+```{r cache=TRUE}
+enet_cv = cv.glmnet(x = model.matrix(~.,house[-47]),y = house$SalePrice,alpha = 0.5,nfolds = 10)
+enet = glmnet(x = model.matrix(~.,house[-47]),y = house$SalePrice,alpha = 1, nlambda = 100)
+plot(enet, xvar='lambda',label=TRUE, lwd=2)
+abline(v=log(enet_cv$lambda.min),col='black',lty=2,lwd=2)
+
+x = which(enet_cv$lambda==enet_cv$lambda.min)
+enet_cv$nzero[x]
+```
+
+The best lambda is ```r round(enet_cv$lambda.min)```. 78 out of 95 model coefficients are not zero in te fit. There are 4 parameters less in the elastic net model compared to the lasso model. elastic net is a combination of lasso and ridge regression. because ridge does not perform variable selection, it makes the elastic net model with more variables.
+
+(c)
+
+```{r cache=TRUE}
+coef(lasso,s=lasso_cv$lambda.min)
+coef(enet,s=enet_cv$lambda.min)
+
+
+```
+
+Question 5: Variable Selection via Group LASSO
+
+(a)
+```{r cache=TRUE}
+library(gglasso)
+lasso_group = cv.gglasso(x = model.matrix(~.,house[-47]),y = house$SalePrice,group = ,nfolds = 10)
+
 
 ```
 
 
+()
